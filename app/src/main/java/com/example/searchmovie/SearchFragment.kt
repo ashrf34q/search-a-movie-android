@@ -8,6 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
 import com.example.searchmovie.databinding.FragmentSearchBinding
 
 class SearchFragment : Fragment() {
@@ -15,7 +18,6 @@ class SearchFragment : Fragment() {
 
     private lateinit var searchBinding: FragmentSearchBinding
     private lateinit var activityCallback: SearchDataListener
-
 
 
     interface SearchDataListener {
@@ -44,6 +46,9 @@ class SearchFragment : Fragment() {
         // Inflate the layout for this fragment
         searchBinding = FragmentSearchBinding.inflate(inflater, container, false)
 
+        searchBinding.saveFab.setOnClickListener {
+            activityCallback.onBookmark()
+        }
 //        searchBinding.saveFab.visibility = View.GONE
 
         return searchBinding.root
@@ -53,15 +58,34 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+         val model = ViewModelProvider(requireActivity())[MovieViewModel::class.java]
+        model.movieTitle.observe(viewLifecycleOwner, Observer {
+            searchBinding.movieTitle.text = it
+        })
+
+        model.moviePlot.observe(viewLifecycleOwner) {
+            searchBinding.movieDescription.text = it
+        }
+
+        model.moviePoster.observe(viewLifecycleOwner) { posterURI ->
+            context?.let {
+                Glide.with(it)
+                    .load(posterURI)
+                    .into(searchBinding.movieCover)
+            }
+        }
 
         searchBinding.searchView.setOnQueryTextListener (object: SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
+            override fun onQueryTextSubmit(query0: String?): Boolean {
 
-                activityCallback.onUserInput(query.toString())
+                val query1 = query0?.trim()
+
+                activityCallback.onUserInput(query1?.replace(' ', '+').toString())
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
+                // TODO("Inside this function, we can implement realtime suggestions for movie titles as the user inputs data")
                 Log.w("onQueryChange", newText.toString())
                 return true
             }

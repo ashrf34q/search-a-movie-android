@@ -8,14 +8,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.cursoradapter.widget.CursorAdapter
 import androidx.cursoradapter.widget.SimpleCursorAdapter
+import com.example.searchmovie.databinding.FragmentSavedBinding
 
 class SavedFragment : Fragment() {
 
     private lateinit var dbManager: DBManager
+    private lateinit var savedBinding: FragmentSavedBinding
 
-    private val from = arrayOf(DatabaseHelper._ID, DatabaseHelper.SUBJECT, DatabaseHelper.DESC)
+    private val from = arrayOf(DatabaseHelper._ID, DatabaseHelper.SUBJECT)
     // private val to = intArrayOf(R.id.id, R.id.title, R.id.desc)
 
     override fun onCreateView(
@@ -23,6 +26,8 @@ class SavedFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+
+        savedBinding = FragmentSavedBinding.inflate(inflater, container, false)
 
         dbManager = context?.let { DBManager(it) }!!
         dbManager.open()
@@ -32,9 +37,24 @@ class SavedFragment : Fragment() {
 //        TODO("Create an instance of DBManager, call fetch() load the returned cursor into the CursorAdapter which in turn is loaded into the ListView")
 
         val cursor: Cursor = dbManager.fetch()
-        // val cursorAdapter = SimpleCursorAdapter(context, com.google.android.material.R.layout.abc_activity_chooser_view_list_item, cursor, false)
 
-        return inflater.inflate(R.layout.fragment_saved, container, false)
+        if(cursor.moveToFirst()) {
+            do {
+                val title = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.SUBJECT))
+                val id = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper._ID))
+
+                val textView = TextView(context)
+                textView.text = "$id: $title"
+
+                savedBinding.scrollViewLayout.addView(textView)
+
+            }
+                while (cursor.moveToNext())
+
+                cursor.close()
+        }
+
+        return savedBinding.root
     }
 }
 
