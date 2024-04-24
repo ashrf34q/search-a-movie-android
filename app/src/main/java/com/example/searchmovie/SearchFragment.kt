@@ -2,6 +2,7 @@ package com.example.searchmovie
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,9 +16,6 @@ class SearchFragment : Fragment() {
     private lateinit var searchBinding: FragmentSearchBinding
     private lateinit var activityCallback: SearchDataListener
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
 
     interface SearchDataListener {
@@ -58,11 +56,14 @@ class SearchFragment : Fragment() {
 
         searchBinding.searchView.setOnQueryTextListener (object: SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                TODO("Get the movie name and call onUserInput()")
+
+                activityCallback.onUserInput(query.toString())
+                return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                TODO("Not yet implemented")
+                Log.w("onQueryChange", newText.toString())
+                return true
             }
 
         })

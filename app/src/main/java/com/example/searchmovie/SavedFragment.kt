@@ -1,59 +1,44 @@
 package com.example.searchmovie
 
+import android.content.Context
+import android.database.Cursor
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.cursoradapter.widget.CursorAdapter
+import androidx.cursoradapter.widget.SimpleCursorAdapter
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [SavedFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class SavedFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var dbManager: DBManager
+
+    private val from = arrayOf(DatabaseHelper._ID, DatabaseHelper.SUBJECT, DatabaseHelper.DESC)
+    // private val to = intArrayOf(R.id.id, R.id.title, R.id.desc)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+
+        dbManager = context?.let { DBManager(it) }!!
+        dbManager.open()
+
+        Log.w("SavedFragment", "Created Saved Fragment")
+
+//        TODO("Create an instance of DBManager, call fetch() load the returned cursor into the CursorAdapter which in turn is loaded into the ListView")
+
+        val cursor: Cursor = dbManager.fetch()
+        // val cursorAdapter = SimpleCursorAdapter(context, com.google.android.material.R.layout.abc_activity_chooser_view_list_item, cursor, false)
+
         return inflater.inflate(R.layout.fragment_saved, container, false)
     }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SavedFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SavedFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }
+
+
+/*
+private lateinit var activityCallback: SavedDataListener
+ */
