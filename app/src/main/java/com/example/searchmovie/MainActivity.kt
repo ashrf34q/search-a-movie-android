@@ -3,6 +3,7 @@ package com.example.searchmovie
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -35,7 +36,7 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        movieViewModel = ViewModelProvider(this).get(MovieViewModel::class.java)
+        movieViewModel = ViewModelProvider(this)[(MovieViewModel::class.java)]
 
         dbManager = DBManager(this)
         dbManager.open()
@@ -90,8 +91,24 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
     }
 
     override fun onBookmark() {
-//        TODO("Load current movie, taken from the ViewModel into the SQLite db")
-        dbManager.insert(movieViewModel.movieTitle.toString()!!)
-        Log.w("MainActivity", "Inserted ${movieViewModel.movieTitle.toString()!!} into SQLite")
+        // Check if current movie is available in the database, or if current movie is null. Any of those is true, don't load movie into database
+        val currentMovie = movieViewModel?.movieTitle?.value.toString()
+        val cursor = dbManager.fetch()
+
+        if(cursor.moveToFirst()) {
+            if (cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.SUBJECT)) == currentMovie) {
+                Toast.makeText(this, "Movie already saved!", Toast.LENGTH_SHORT).show()
+                return
+            }
+            else {
+                dbManager.insert(currentMovie)
+            }
+        }
+        else {
+            dbManager.insert(currentMovie)
+            return
+        }
+
+        Log.w("onBookmark", "Inserted ${movieViewModel.movieTitle} into SQLite")
     }
 }

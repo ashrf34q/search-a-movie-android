@@ -11,6 +11,9 @@ import android.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.RequestOptions.centerInsideTransform
+import com.bumptech.glide.request.RequestOptions.circleCropTransform
 import com.example.searchmovie.databinding.FragmentSearchBinding
 
 class SearchFragment : Fragment() {
@@ -57,6 +60,9 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+        searchBinding.movieCover.maxHeight = 165
 
          val model = ViewModelProvider(requireActivity())[MovieViewModel::class.java]
         model.movieTitle.observe(viewLifecycleOwner, Observer {

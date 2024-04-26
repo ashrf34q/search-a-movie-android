@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cursoradapter.widget.CursorAdapter
 import androidx.cursoradapter.widget.SimpleCursorAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.example.searchmovie.databinding.FragmentSavedBinding
 
 class SavedFragment : Fragment() {
@@ -34,8 +35,6 @@ class SavedFragment : Fragment() {
 
         Log.w("SavedFragment", "Created Saved Fragment")
 
-//        TODO("Create an instance of DBManager, call fetch() load the returned cursor into the CursorAdapter which in turn is loaded into the ListView")
-
         val cursor: Cursor = dbManager.fetch()
 
         if(cursor.moveToFirst()) {
@@ -44,9 +43,9 @@ class SavedFragment : Fragment() {
                 val id = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper._ID))
 
                 val textView = TextView(context)
-                textView.text = "$id: $title"
+                textView.text = "$id: ${title}"
 
-                savedBinding.scrollViewLayout.addView(textView)
+                savedBinding.linearLayoutItems.addView(textView)
 
             }
                 while (cursor.moveToNext())
@@ -57,8 +56,3 @@ class SavedFragment : Fragment() {
         return savedBinding.root
     }
 }
-
-
-/*
-private lateinit var activityCallback: SavedDataListener
- */

@@ -5,7 +5,7 @@
          <item name="colorPrimary">@color/colorPrimary</item>
     </style>
 
-    <style name="Theme.SearchMovie" parent="Base.Theme.SearchMovie">
+    <style name="Theme.SearchMovie" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
     </style>
 </resources>
